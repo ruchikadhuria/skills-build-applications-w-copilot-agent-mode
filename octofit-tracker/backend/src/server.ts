@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 dotenv.config();
 
 const app = express();
-const port = Number(process.env.PORT) || 8000;
+const port = 8000;
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/octofit_db';
 
 app.use(cors());
@@ -14,6 +14,27 @@ app.use(express.json());
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });
+});
+
+// Baseline route handlers for Octofit logic tier resources.
+app.get('/api/users/', (_req, res) => {
+  res.json({ resource: 'users', items: [], count: 0 });
+});
+
+app.get('/api/teams/', (_req, res) => {
+  res.json({ resource: 'teams', items: [], count: 0 });
+});
+
+app.get('/api/activities/', (_req, res) => {
+  res.json({ resource: 'activities', items: [], count: 0 });
+});
+
+app.get('/api/leaderboard/', (_req, res) => {
+  res.json({ resource: 'leaderboard', items: [], count: 0 });
+});
+
+app.get('/api/workouts/', (_req, res) => {
+  res.json({ resource: 'workouts', items: [], count: 0 });
 });
 
 const codespaceName = process.env.CODESPACE_NAME;
