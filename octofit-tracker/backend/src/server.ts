@@ -12,6 +12,13 @@ const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/octofit_d
 app.use(cors());
 app.use(express.json());
 
+app.get('/', (_req, res) => {
+  res.json({
+    message: 'OctoFit API is running',
+    endpoints: ['/api/health', '/api/users/', '/api/activities/']
+  });
+});
+
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
