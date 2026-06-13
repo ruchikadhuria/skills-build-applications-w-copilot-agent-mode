@@ -52,15 +52,17 @@ function normalizeResponse(payload, requestUrl) {
   return { items, next, previous, count }
 }
 
-function ResourceListPage({ title, resource }) {
+function ResourceListPage({ title, endpoint }) {
   const codespaceName = import.meta.env.VITE_CODESPACE_NAME
-  const baseUrl = codespaceName
-    ? `https://${codespaceName}-8000.app.github.dev`
-    : 'http://localhost:8000'
 
-  const endpoint = useMemo(() => `${baseUrl}/api/${resource}/`, [baseUrl, resource])
+  const stableEndpoint = useMemo(() => endpoint, [endpoint])
+  const resource = useMemo(() => {
+    const path = new URL(stableEndpoint, window.location.origin).pathname
+    const parts = path.split('/').filter(Boolean)
+    return parts.at(-1) ?? title.toLowerCase()
+  }, [stableEndpoint, title])
 
-  const [requestUrl, setRequestUrl] = useState(endpoint)
+  const [requestUrl, setRequestUrl] = useState(stableEndpoint)
   const [items, setItems] = useState([])
   const [nextPageUrl, setNextPageUrl] = useState(null)
   const [previousPageUrl, setPreviousPageUrl] = useState(null)
@@ -122,7 +124,7 @@ function ResourceListPage({ title, resource }) {
       <div className="card-body">
         <h2 className="h4 mb-2">{title}</h2>
         <p className="text-body-secondary small mb-3">
-          Endpoint: <code>{endpoint}</code>
+          Endpoint: <code>{stableEndpoint}</code>
         </p>
 
         {!codespaceName && (
@@ -135,7 +137,7 @@ function ResourceListPage({ title, resource }) {
           <button
             type="button"
             className="btn btn-sm btn-outline-secondary"
-            onClick={() => setRequestUrl(endpoint)}
+              onClick={() => setRequestUrl(stableEndpoint)}
             disabled={loading}
           >
             Refresh
